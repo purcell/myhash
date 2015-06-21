@@ -4,7 +4,7 @@ class HashMap
   end
 
   def size
-    0
+    @storage.size
   end
 
   def has_key?(key)
@@ -12,12 +12,13 @@ class HashMap
   end
 
   def [](key)
-    if entry = @storage.find { |k, v| k == key }
-      entry[1]
+    if found = @storage.find { |k, v| k == key }
+      found[1]
     end
   end
 
   def []=(key, value)
-    @storage << [key, value]
+    @storage.delete_if { |k, v| k == key }
+    @storage.unshift [key, value]
   end
 end

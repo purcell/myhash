@@ -2,9 +2,9 @@ require 'hash_map'
 
 RSpec.describe HashMap do
 
+  let(:map) { HashMap.new }
 
   context "when empty" do
-    let(:map) { HashMap.new }
 
     it "reports a zero size" do
       expect(map.size).to eql(0)
@@ -17,13 +17,16 @@ RSpec.describe HashMap do
     it "returns nil for arbitrary keys" do
       expect(map["blah"]).to eql(nil)
     end
+  end
 
+  context "when inserting values" do
     it "allows insertion of a key/value pair" do
       expect(map["key"]).to eql(nil)
       returned = (map["key"] = "value")
       expect(returned).to eql("value")
       expect(map.has_key?("key")).to eql(true)
       expect(map["key"]).to eql("value")
+      expect(map.size).to eql(1)
     end
 
     it "allows insertion of multiple key/value pairs" do
@@ -33,6 +36,16 @@ RSpec.describe HashMap do
       expect(map["key1"]).to eql("value1")
       expect(map.has_key?("key2")).to eql(true)
       expect(map["key2"]).to eql("value2")
+      expect(map.size).to eql(2)
+    end
+  end
+
+  context "when setting keys which already exist" do
+    it "replaces the old keys" do
+      map["key"] = "one"
+      map["key"] = "two"
+      expect(map["key"]).to eql("two")
+      expect(map.size).to eql(1)
     end
   end
 

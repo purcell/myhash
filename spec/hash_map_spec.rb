@@ -109,6 +109,7 @@ RSpec.describe HashMap do
         map["key#{i}"] = "value#{i}"
       end
       expect(map.bucket_sizes.size).to eql(initial_buckets * 2)
+      expect(map.size).to eql(initial_buckets)
     end
   end
 end

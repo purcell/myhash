@@ -23,8 +23,9 @@ class HashMap
   end
 
   def items
+    saved_buckets = @buckets.dup
     Enumerator.new do |enum|
-      @buckets.each do |bucket|
+      saved_buckets.each do |bucket|
         bucket.items.each do |item|
           enum << item
         end

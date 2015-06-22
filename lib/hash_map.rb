@@ -33,8 +33,8 @@ end
 class String
   def myhash
     hash = 0xf00
-    chars.each do |c|
-      hash ^= c.ord
+    each_byte do |byte|
+      hash ^= byte
     end
     hash
   end

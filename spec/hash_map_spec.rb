@@ -61,7 +61,7 @@ RSpec.describe HashMap do
   end
 
   def key_hashing_to(key, hashcode)
-    (class << key; self end).send(:define_method, :myhash, proc { hashcode })
+    allow(key).to receive(:myhash).and_return(hashcode)
     key
   end
 

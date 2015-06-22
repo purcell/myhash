@@ -4,8 +4,7 @@ class HashMap
   attr_reader :size
 
   def initialize
-    @buckets = create_buckets(4)
-    @size = 0
+    create_buckets(4)
   end
 
   def has_key?(key)
@@ -50,14 +49,14 @@ class HashMap
   end
 
   def create_buckets(n)
-    n.times.map { Bucket.new }
+    @buckets = n.times.map { Bucket.new }
+    @size = 0
   end
 
   def maybe_rebalance
     if load_factor > 0.75
       enum = items
-      @buckets = create_buckets(@buckets.size * 2)
-      @size = 0
+      create_buckets(@buckets.size * 2)
       enum.each do |key, val|
         insert!(key, val)
       end

@@ -1,3 +1,5 @@
+require 'bucket'
+
 class HashMap
   def initialize
     @buckets = create_buckets(4)

@@ -16,6 +16,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
+    ruby-prof (0.15.8)
 
 PLATFORMS
   ruby
@@ -23,6 +24,7 @@ PLATFORMS
 DEPENDENCIES
   rake
   rspec
+  ruby-prof
 
 BUNDLED WITH
    1.10.3

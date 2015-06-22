@@ -49,4 +49,28 @@ RSpec.describe HashMap do
     end
   end
 
+  it "handles hash collisions" do
+    key1 = "key1"
+    class << key1
+      def myhash
+        1
+      end
+    end
+    key2 = "key2"
+    class << key2
+      def myhash
+        1
+      end
+    end
+    map[key1] = "one"
+    map[key2] = "two"
+    expect(map.size).to eql(2)
+    expect(map[key1]).to eql("one")
+    expect(map[key2]).to eql("two")
+  end
+
+  it "allows nil keys" do
+    map[nil] = "hello"
+    expect(map[nil]).to eql("hello")
+  end
 end

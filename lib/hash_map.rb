@@ -1,12 +1,11 @@
 require 'bucket'
 
 class HashMap
+  attr_reader :size
+
   def initialize
     @buckets = create_buckets(4)
-  end
-
-  def size
-    bucket_sizes.inject(0, :+)
+    @size = 0
   end
 
   def has_key?(key)
@@ -44,7 +43,10 @@ class HashMap
   private
 
   def insert!(key, value)
-    find_bucket(key)[key] = value
+    bucket = find_bucket(key)
+    initial_size = bucket.size
+    bucket[key] = value
+    @size += bucket.size - initial_size
   end
 
   def create_buckets(n)
@@ -55,6 +57,7 @@ class HashMap
     if load_factor > 0.75
       enum = items
       @buckets = create_buckets(@buckets.size * 2)
+      @size = 0
       enum.each do |key, val|
         insert!(key, val)
       end

@@ -49,6 +49,12 @@ RSpec.describe HashMap do
     end
   end
 
+  it "can enumerate its pairs" do
+    map["key1"] = "one"
+    map["key2"] = "two"
+    expect(map.items.to_a.sort).to eql([["key1", "one"], ["key2", "two"]])
+  end
+
   it "allows nil keys" do
     map[nil] = "hello"
     expect(map[nil]).to eql("hello")
@@ -85,6 +91,24 @@ RSpec.describe HashMap do
       expect(map.bucket_sizes.first(2)).to eql([1, 1])
       map[key3] = "three"
       expect(map.bucket_sizes.first(2)).to eql([1, 2])
+    end
+  end
+
+  describe "bucket reallocation" do
+    it "reports its load factor" do
+      expect(map.load_factor).to eql(0.0)
+      map["key1"] = "one"
+      expect(map.load_factor).to eql(1.0 / map.bucket_sizes.size)
+      map["key2"] = "two"
+      expect(map.load_factor).to eql(2.0 / map.bucket_sizes.size)
+    end
+
+    it "increases buckets when there are more items than buckets" do
+      initial_buckets = map.bucket_sizes.size
+      (1..initial_buckets).map do |i|
+        map["key#{i}"] = "value#{i}"
+      end
+      expect(map.bucket_sizes.size).to eql(initial_buckets * 2)
     end
   end
 end

@@ -37,4 +37,10 @@ RSpec.describe Bucket do
     end
   end
 
+  it "can enumerate its items" do
+    bucket = Bucket.new
+    bucket["key1"] = "one"
+    bucket["key2"] = "two"
+    expect(bucket.items.to_a.sort).to eql([["key1", "one"], ["key2", "two"]])
+  end
 end

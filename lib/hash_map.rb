@@ -1,6 +1,6 @@
 class HashMap
   def initialize
-    @buckets = [Bucket.new, Bucket.new]
+    @buckets = create_buckets(4)
   end
 
   def size
@@ -16,14 +16,47 @@ class HashMap
   end
 
   def []=(key, value)
-    find_bucket(key)[key] = value
+    insert!(key, value)
+    maybe_rebalance
+  end
+
+  def items
+    Enumerator.new do |enum|
+      @buckets.each do |bucket|
+        bucket.items.each do |item|
+          enum << item
+        end
+      end
+    end
   end
 
   def bucket_sizes
     @buckets.map(&:size)
   end
 
+  def load_factor
+    size.to_f / @buckets.size
+  end
+
   private
+
+  def insert!(key, value)
+    find_bucket(key)[key] = value
+  end
+
+  def create_buckets(n)
+    n.times.map { Bucket.new }
+  end
+
+  def maybe_rebalance
+    if load_factor > 0.75
+      enum = items
+      @buckets = create_buckets(@buckets.size * 2)
+      enum.each do |key, val|
+        insert!(key, val)
+      end
+    end
+  end
 
   def find_bucket(key)
     @buckets[key.myhash % @buckets.size]

@@ -9,12 +9,12 @@ class Bucket
   end
 
   def []=(key, val)
-    @entries.delete_if { |k, v| key == k }
+    @entries.delete_if(&matches_key(key))
     @entries.unshift([key, val].freeze)
   end
 
   def [](key)
-    if found = @entries.find { |k, v| k == key }
+    if found = @entries.find(&matches_key(key))
       found[1]
     end
   end
@@ -24,6 +24,12 @@ class Bucket
   end
 
   def has_key?(key)
-    @entries.any? { |k,v| k == key }
+    @entries.any?(&matches_key(key))
+  end
+
+  private
+
+  def matches_key(key)
+    ->(k, v) { k == key }
   end
 end

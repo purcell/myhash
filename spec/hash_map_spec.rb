@@ -78,10 +78,13 @@ RSpec.describe HashMap do
     it "chooses between buckets based on hash code modulus bucket count" do
       key1 = key_hashing_to("key1", 0)
       key2 = key_hashing_to("key2", 1)
+      key3 = key_hashing_to("key3", 1)
       map[key1] = "one"
       expect(map.bucket_sizes.first(2)).to eql([1, 0])
       map[key2] = "two"
       expect(map.bucket_sizes.first(2)).to eql([1, 1])
+      map[key3] = "three"
+      expect(map.bucket_sizes.first(2)).to eql([1, 2])
     end
   end
 end

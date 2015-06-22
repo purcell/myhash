@@ -1,24 +1,28 @@
 class HashMap
   def initialize
-    @storage = []
+    @buckets = [Bucket.new]
   end
 
   def size
-    @storage.size
+    @buckets.inject(0) { |total, bucket| total + bucket.size }
   end
 
   def has_key?(key)
-    @storage.any? { |k, v| k == key }
+    @buckets.any? { |bucket| bucket.has_key?(key) }
   end
 
   def [](key)
-    if found = @storage.find { |k, v| k == key }
-      found[1]
+    @buckets.each do |bucket|
+      if found = bucket[key]
+        return found
+      end
     end
+    nil
   end
 
   def []=(key, value)
-    @storage.delete_if { |k, v| k == key }
-    @storage.unshift [key, value]
+    @buckets.first[key] = value
+  end
+end
   end
 end

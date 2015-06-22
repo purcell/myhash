@@ -1,28 +1,29 @@
 require 'hash_map'
 
 class StringHashBenchmarks
-  def run
+  def run(n=5000)
     hash = HashMap.new
-    input = random_strings
+    input = random_strings(n)
     input.each do |s|
       hash[s] = s
     end
-    avg, stddev = avg_and_stddev(hash.bucket_sizes)
-    puts "InputItems: #{input.size}"
-    puts "HashedItems: #{hash.size}"
-    puts "Buckets: #{hash.bucket_sizes.size}"
-    puts "LoadFactor: #{hash.load_factor}"
-    puts "Avg: #{avg}"
-    puts "Stddev: #{stddev}"
+    stddev = stddev(hash.bucket_sizes)
+    puts <<EOF
+InputItems:  #{input.size}
+HashedItems: #{hash.size}
+Buckets:     #{hash.bucket_sizes.size}
+LoadFactor:  #{hash.load_factor}
+Stddev:      #{stddev}
+EOF
   end
 
-  def avg_and_stddev(nums)
+  def stddev(nums)
     avg = nums.inject(:+).to_f / nums.size
-    stddev = (nums.inject(0) { |total, s| total + (s - avg) ** 2 }) / nums.size
-    [avg, stddev]
+    (nums.inject(0) { |total, s| total + (s - avg) ** 2 }) / nums.size
   end
 
-  def random_strings
-    File.read('/usr/share/dict/words').each_line.to_a.sample(30000)
+  def random_strings(n)
+    srand(1)
+    File.read('/usr/share/dict/words').each_line.to_a.sample(n)
   end
 end

@@ -49,19 +49,19 @@ RSpec.describe HashMap do
     end
   end
 
+  it "allows nil keys" do
+    map[nil] = "hello"
+    expect(map[nil]).to eql("hello")
+  end
+
+  def key_hashing_to(key, hashcode)
+    (class << key; self end).send(:define_method, :myhash, proc { hashcode })
+    key
+  end
+
   it "handles hash collisions" do
-    key1 = "key1"
-    class << key1
-      def myhash
-        1
-      end
-    end
-    key2 = "key2"
-    class << key2
-      def myhash
-        1
-      end
-    end
+    key1 = key_hashing_to("key1", 1)
+    key2 = key_hashing_to("key2", 1)
     map[key1] = "one"
     map[key2] = "two"
     expect(map.size).to eql(2)
@@ -69,8 +69,19 @@ RSpec.describe HashMap do
     expect(map[key2]).to eql("two")
   end
 
-  it "allows nil keys" do
-    map[nil] = "hello"
-    expect(map[nil]).to eql("hello")
+  describe "bucket allocation" do
+    it "starts off with multiple empty buckets" do
+      expect(map.bucket_sizes.length).to be >= 2
+      expect(map.bucket_sizes.all? { |size| size == 0 }).to eql(true)
+    end
+
+    it "chooses between buckets based on hash code modulus bucket count" do
+      key1 = key_hashing_to("key1", 0)
+      key2 = key_hashing_to("key2", 1)
+      map[key1] = "one"
+      expect(map.bucket_sizes.first(2)).to eql([1, 0])
+      map[key2] = "two"
+      expect(map.bucket_sizes.first(2)).to eql([1, 1])
+    end
   end
 end

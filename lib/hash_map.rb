@@ -1,6 +1,6 @@
 class HashMap
   def initialize
-    @buckets = [Bucket.new]
+    @buckets = [Bucket.new, Bucket.new]
   end
 
   def size
@@ -17,6 +17,10 @@ class HashMap
 
   def []=(key, value)
     find_bucket(key)[key] = value
+  end
+
+  def bucket_sizes
+    @buckets.map(&:size)
   end
 
   private

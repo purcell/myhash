@@ -1,3 +1,4 @@
+require 'benchmark'
 require 'ruby-prof'
 require 'hash_map'
 
@@ -33,7 +34,10 @@ EOF
 end
 
 def string_hash_benchmark(n=5000)
-  StringHashBenchmarks.new(n).run
+  times = Benchmark.measure do
+    StringHashBenchmarks.new(n).run
+  end
+  puts "Times:     #{times}"
 end
 
 def string_hash_profile(n=5000)

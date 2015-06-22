@@ -68,9 +68,9 @@ end
 
 class String
   def myhash
-    hash = 0xf00
-    each_byte do |byte|
-      hash ^= byte
+    hash = 0x0000
+    each_byte.with_index do |byte, i|
+      hash ^= byte << i % 32
     end
     hash
   end

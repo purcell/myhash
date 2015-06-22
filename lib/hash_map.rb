@@ -4,7 +4,7 @@ class HashMap
   end
 
   def size
-    @buckets.inject(0) { |total, bucket| total + bucket.size }
+    bucket_sizes.inject(0) { |total, size| total + size }
   end
 
   def has_key?(key)

@@ -73,6 +73,8 @@ class String
     hash = 0x0000
     each_byte.with_index do |byte, i|
       hash ^= byte << i % 32
+      ## java.lang.String does it like this:
+      #hash ^= byte * (31 ** (size - 1 - i))
     end
     hash
   end

@@ -2,12 +2,37 @@ require 'benchmark'
 require 'ruby-prof'
 require 'hash_map'
 
+module Measurements
+  def benchmark(meth)
+    times = Benchmark.measure(&method(meth))
+    puts "Times:     #{times}"
+  end
+
+  def profile(meth)
+    result = RubyProf.profile do
+      send(meth)
+    end
+    printer = RubyProf::GraphHtmlPrinter.new(result)
+    fname = "/tmp/profile.html"
+    File.open(fname, 'w') do |f|
+      printer.print(f)
+    end
+    system("open '#{fname}'")
+  end
+end
+
 class StringHashBenchmarks
+  include Measurements
+
   def initialize(n=5000)
     @input = random_strings(n)
   end
 
-  def run
+  def run_hashing
+    @input.each do |s| s.myhash end
+  end
+
+  def run_insert
     hash = HashMap.new
     @input.each do |s|
       hash[s] = s
@@ -33,22 +58,5 @@ EOF
   end
 end
 
-def string_hash_benchmark(n=5000)
-  times = Benchmark.measure do
-    StringHashBenchmarks.new(n).run
-  end
-  puts "Times:     #{times}"
-end
 
-def string_hash_profile(n=5000)
-  benchmark = StringHashBenchmarks.new(n)
-  result = RubyProf.profile do
-    benchmark.run
-  end
-  printer = RubyProf::GraphHtmlPrinter.new(result)
-  fname = "/tmp/profile.html"
-  File.open(fname, 'w') do |f|
-    printer.print(f)
-  end
-  system("open '#{fname}'")
-end
+
